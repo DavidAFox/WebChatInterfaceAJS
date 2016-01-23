@@ -1,0 +1,127 @@
+body html {
+	min-height: 100%;
+	height: 100%;
+}
+
+.chat-container {
+	height: 700px;
+	padding: 0;
+	margin: 0;
+}
+
+.chat-input-group-btn {
+	width: 20%;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+}
+
+#chat-login-footer {
+	height: 10%;
+}
+
+.chat-btn {
+	padding:0;
+	width: 100%;
+	margin: 0;
+	height: 100%;
+}
+.chat-input-group {
+	width: 100%;
+	margin: 0;
+	height: 100%;
+	padding: 0;
+}
+.chat-form-control {
+	width: 80%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+.chat-panel-heading {
+	height: 10%;
+	text-align: center;
+}
+#chat-window {
+	
+}
+.chat-panel {
+	border-style: solid;
+	border-color: green;
+	margin: 0;
+	height: 100%;
+	padding: 0;
+}
+
+.chat-panel-footer {
+	height: 10%;
+	padding: 0;
+	margin: 0;
+}
+.chat-panel-body {
+	height: 80%;
+	overflow-y: auto;
+	padding: 0;
+	margin: 0;
+}
+.chat-program {
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.chat-login-panel {
+	border-style: solid;
+	border-color: green;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.chat-login-panel-body {
+	height: 80%;
+}
+
+.chat-login-form {
+	padding: 5px;
+	width: 100%;
+}
+.chat-login-input-group {
+
+}
+
+.chat-login-button {
+	width: 100%;
+}
+
+.chat-login-btn-group {
+	width: 100%;
+}
+
+#chat-new-account-window {
+	
+}
+
+.chat-new-account-btn-group {
+	width: 100%;
+}
+
+.chat-new-account-button {
+	width: 100%;
+}
+
+.chat-row {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.chat-col {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+#chat-friend-body {
+	width: 100%;
+}

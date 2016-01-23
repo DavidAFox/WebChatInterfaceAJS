@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<link href="assets/css/webchat.css" rel="stylesheet" title= "webchat" type="text/css"/>
+		<script src="lib/angular.js"></script>
+
+	</head>
+	<body ng-app="chatInterface">
+		<div class="chat-container col-sm-6 col-xs-8 col-md-6 col-lg-6">
+			<div ng-controller="MainController" class="chat-program">
+				<div ng-show="loggedState === 0" class="panel panel-default chat-login-panel" id="chat-login-window">
+					<div class="panel-heading chat-login-panel-heading chat-panel-heading">
+						<h3 class="panel-title chat-panel-title">Chat</h3>
+					</div>
+					<div class="panel-body chat-login-panel-body">
+						<div class="input-group chat-login-input-group">
+							<input ng-model= 'name' type="text" class="form-control chat-login-form" placeholder="Username" id="chat-login-name" aria-describedby="basic-addon1">
+							<input ng-keyup="$event.keyCode === 13 && doLogin(name, password)" ng-model= 'password' type="password" class="form-control chat-login-form" placeholder="Password" id="chat-login-password" aria-describedby="basic-addon1">
+							<div  class="btn-group chat-login-btn-group" role="group" aria-label="chat-login-button">
+								<button ng-click='doLogin(name, password)' type="button" class="btn btn-default chat-login-button" id="chat-login-button">Login</button>
+							</div>
+							<button type= "button" class="btn btn-default chat-login-button" id="chat-goto-new-account-button">Create New Account</button>
+						</div>
+					</div>
+					<div class="panel-footer chat-panel-footer" id="chat-login-footer">
+						{{ logginMessage }}
+					</div>
+				</div>
+				<div ng-show="loggedState === 1" class="panel panel-default chat-new-account-panel chat-panel" id="chat-new-account-window">
+					<div class= "panel-heading chat-panel-heading">
+						<h3 class="panel-title chat-panel-title">Chat</h3>
+					</div>
+					<div class="panel-body chat-new-account-panel-body">
+						<div class="input-group chat-new-account-input-group">
+							<input ng-model="registerName" type="text" class="form-control chat-new-account-form" placeholder="Username" id="chat-new-account-name">
+							<input ng-model="registerPassword" type="password" class="form-control chat-new-account-form" placeholder="Password" id="chat-new-account-password">
+							<input ng-keyup="$event.keyCode === 13 && doRegister(registerName, registerPassword, registerPassword2)" ng-model="registerPassword2" type="password" class="form-control chat-new-account-form" placeholder="Retype Password" id="chat-new-account-password2">
+							<div class="btn-group chat-new-account-btn-group" role="group" aria-label="chat-new-account-button">
+								<button ng-click="doRegister(registerName, registerPassword, registerPassword2)" type="button" class="btn btn-default chat-new-account-button" id="chat-new-account-button">Register</button>
+							</div>
+						</div>
+					</div>
+					<div class="panel-footer chat-pannel-footer" id="chat-new-account-footer">
+						{{ newAccountMessage }}
+					</div>
+				</div>
+				<div ng-show="loggedState === 2" class= "row chat-row"id= "chat-window">
+					<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6 chat-col">
+						<div class="panel panel-default chat-panel" id="chat-panel">
+							<div class="panel-heading chat-panel-heading">
+								<h3 class="panel-title chat-panel-title">Chat</h3>
+							</div>
+							<div scroll-glue class="panel-body chat-panel-body" id= "chat-body">
+								<div ng-repeat="message in messages track by $index">
+									<chat-message></chat-message>
+								</div>
+							</div>
+							<div class="panel-footer chat-panel-footer">
+								<div class="input-group chat-input-group">
+									<span class="input-group-btn chat-input-group-btn">
+										<button ng-click= "send(input)" class="btn btn-default chat-btn" type="button" id ="chat-send-button">Send</button>
+									</span>
+									<input ng-keyup="$event.keyCode === 13 && send(input)" ng-model="input" type="text" class="form-control chat-form-control" id="chat-input" aria-describedby="basic-addon1">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-xs-6 col-md-6 col-lg-6 chat-col">
+						<div class="panel panel-default chat-panel">
+			  				<div class="panel-heading">
+			    				<h3 class="panel-title">Status</h3>
+			  				</div>
+			  				<div class="panel-body">
+				  				<div class="panel panel-default" id = "chat-room-panel">
+				  					<div class="panel-heading">
+				    					<h3 class="panel-title" id = "chat-room-title">Room- {{wholist.Room}}</h3>
+				  					</div>
+				  					<div class="panel-body" id="chat-room-body">
+				  						<wholist></wholist>
+				  					</div>
+								</div>
+								<div class="panel panel-default" id= "chat-friend-panel">
+				  					<div class="panel-heading">
+				    					<h3 class="panel-title">Friend List</h3>
+				  					</div>
+				  					<div class="panel-body" id = "chat-friend-body">
+				  						<friendlist></friendlist>
+				  					</div>
+								</div>
+			  				</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="assets/javascript/app.js"></script>
+		<script src="lib/ui-bootstrap-tpls-1.1.0.min.js"></script>
+		<script src="assets/javascript/http_connection.js"></script>
+		<script src="assets/javascript/user_names.js"></script>
+		<script src="lib/scrollglue.js"></script>
+	</body>
+</html>
+
