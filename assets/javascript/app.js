@@ -1,6 +1,63 @@
 var app = angular.module('chatInterface', ['connectionModule', 'userNames', 'luegg.directives']);
 app.value('serverInfo', {scheme: 'http://', address: 'localhost:8080/'});//change these to the location of the server
-app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConnection', 'websocketConnection', 'focus', function($scope, $interval, serverInfo,httpConnection, websocketConnection, focus){
+app.directive('chatMessage', function(){
+	return {
+		template: 	'<div data-ng-switch="message.Type">' +
+						'<div data-ng-switch-when="Tell">' +
+							'<div data-ng-switch="message.ToReciever">' +
+								'<div data-ng-switch-when="true">' +
+									'{{message.TimeString}} [From <user user-name="{{message.Sender}}">{{message.Sender}}</user>]: {{message.Text}}</br>'+
+								'</div>' +
+								'<div data-ng-switch-when="false">' +
+									'{{message.TimeString}} [To <user user-name="{{message.Reciever}}">{{message.Reciever}}</user>]: {{message.Text}}</br>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div data-ng-switch-when="Join">' +
+							'<user user-name="{{message.Subject}}">{{message.Subject}}</user> {{message.Text}}</br>' +
+						'</div>' +
+						'<div data-ng-switch-when="Server">' +
+							'{{message.Text}}</br>' +
+						'</div>' +
+						'<div data-ng-switch-when="Send">' +
+							'{{message.TimeString}} [<user user-name="{{message.Sender}}">{{message.Sender}}</user>]: {{message.Text}}' +
+						'</div>' +
+						'<div data-ng-switch-default>' +
+							'{{message}}' +
+						'</div>' +
+					'</div>',
+		restrict: 'E'
+	};
+});
+app.directive('friendlist', function(){
+	return {
+		template: 	'<div data-ng-repeat="friend in friendlist" track by $index>' +
+						'<user user-name="{{friend.Name}}">{{friend.Name}}</user>- {{friend.Room}}' +
+					'</div>',
+		restrict: 'E'
+	};
+});
+app.directive('wholist', function() {
+	return  {
+		template: 	'<div data-ng-repeat="person in wholist.Clients track by $index">' +
+						'<user user-name="{{person}}"></user>' +
+					'</div>',
+		restrict: 'E' 
+	};
+});
+app.factory('focus', ['$timeout', '$window', function($timeout, $window){
+	return function(id) {
+		$timeout(function(){
+			var element = $window.document.getElementById(id);
+			if(element) {
+				element.focus();
+			}
+		});
+	};
+}]);
+
+app.directive('chatInterface', function() {
+	var controller = ['$scope','$interval', 'serverInfo', 'httpConnection', 'websocketConnection', 'focus', function($scope, $interval, serverInfo,httpConnection, websocketConnection, focus){
 	const LOGIN = 0;
 	const REGISTER = 1;
 	const LOGGED = 2;
@@ -143,59 +200,10 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 		$event.stopPropagation();
 		$scope.status.isopen = !$scope.status.isopen;
 	};
-}]);
-app.directive('chatMessage', function(){
+}];
 	return {
-		template: 	'<div data-ng-switch="message.Type">' +
-						'<div data-ng-switch-when="Tell">' +
-							'<div data-ng-switch="message.ToReciever">' +
-								'<div data-ng-switch-when="true">' +
-									'{{message.TimeString}} [From <user user-name="{{message.Sender}}">{{message.Sender}}</user>]: {{message.Text}}</br>'+
-								'</div>' +
-								'<div data-ng-switch-when="false">' +
-									'{{message.TimeString}} [To <user user-name="{{message.Reciever}}">{{message.Reciever}}</user>]: {{message.Text}}</br>' +
-								'</div>' +
-							'</div>' +
-						'</div>' +
-						'<div data-ng-switch-when="Join">' +
-							'<user user-name="{{message.Subject}}">{{message.Subject}}</user> {{message.Text}}</br>' +
-						'</div>' +
-						'<div data-ng-switch-when="Server">' +
-							'{{message.Text}}</br>' +
-						'</div>' +
-						'<div data-ng-switch-when="Send">' +
-							'{{message.TimeString}} [<user user-name="{{message.Sender}}">{{message.Sender}}</user>]: {{message.Text}}' +
-						'</div>' +
-						'<div data-ng-switch-default>' +
-							'{{message}}' +
-						'</div>' +
-					'</div>',
+		controller: controller,
+		templateUrl: 'webchat.html',
 		restrict: 'E'
-	};
-});
-app.directive('friendlist', function(){
-	return {
-		template: 	'<div data-ng-repeat="friend in friendlist" track by $index>' +
-						'<user user-name="{{friend.Name}}">{{friend.Name}}</user>- {{friend.Room}}' +
-					'</div>',
-		restrict: 'E'
-	};
-});
-app.directive('wholist', function() {
-	return  {
-		template: 	'<div data-ng-repeat="person in wholist.Clients track by $index">' +
-						'<user user-name="{{person}}"></user>' +
-					'</div>',
-		restrict: 'E' 
-	};
-});
-app.factory('focus', ['$timeout', '$window', function($timeout, $window){
-	return function(id) {
-		$timeout(function(){
-			var element = $window.document.getElementById(id);
-			if(element) {
-				element.focus();
-			}
-		});
-	};
-}]);
+	}
+})
