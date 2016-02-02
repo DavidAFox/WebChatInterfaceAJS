@@ -25,9 +25,11 @@ describe("Main App", function(){
 	describe("MainController", function() {
 		var $scope;
 		var controller;
+		var focus;
 		beforeEach(function() {
 			$scope = {};
-			controller = $controller('MainController', {$scope: $scope, serverInfo: {scheme: 'http://', address: 'testAddress/'}, httpConnection: fakeConnection(), websocketConnection: fakeConnection()});
+			focus = function(){return}
+			controller = $controller('MainController', {$scope: $scope, serverInfo: {scheme: 'http://', address: 'testAddress/'}, httpConnection: fakeConnection(), websocketConnection: fakeConnection(), focus: focus});
 		});
 		it("should send a login command", function(){
 			spyOn(fake, 'send');

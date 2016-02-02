@@ -56,8 +56,7 @@ app.factory('focus', ['$timeout', '$window', function($timeout, $window){
 	};
 }]);
 
-app.directive('chatInterface', function() {
-	var controller = ['$scope','$interval', 'serverInfo', 'httpConnection', 'websocketConnection', 'focus', function($scope, $interval, serverInfo,httpConnection, websocketConnection, focus){
+app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConnection', 'websocketConnection', 'focus', function($scope, $interval, serverInfo,httpConnection, websocketConnection, focus){
 	const LOGIN = 0;
 	const REGISTER = 1;
 	const LOGGED = 2;
@@ -200,9 +199,12 @@ app.directive('chatInterface', function() {
 		$event.stopPropagation();
 		$scope.status.isopen = !$scope.status.isopen;
 	};
-}];
+}]);
+
+app.directive('chatInterface', function() {
+
 	return {
-		controller: controller,
+		controller: 'MainController',
 		templateUrl: 'webchat.html',
 		restrict: 'E'
 	}
