@@ -78,6 +78,12 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 		$scope.conn.send({Command: array[0],Args: array.slice(1)});
 		$scope.input = ""
 	};
+	$scope.toggelNewAccount = function() {
+		$scope.loggedState = REGISTER;
+	}
+	$scope.toggelLogin = function() {
+		$scope.loggedState = LOGIN
+	}
 	var config = {
 		resetLogin: function() {
 			$scope.loggedState = LOGIN;
