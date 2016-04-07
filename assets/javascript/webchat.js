@@ -63,6 +63,7 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 	const LOGGED = 2;
 	var that = this;
 	var messageGetter;
+	var websocketAttempts = 0;
 	$scope.loggedState = LOGIN;
 	$scope.messages = [];
 	$scope.loginMessage = "";
@@ -88,11 +89,13 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 	}
 	var config = {
 		resetLogin: function() {
+			websocketAttempts += 1;
 			$scope.loggedState = LOGIN;
 			$interval.cancel(messageGetter);
-			if('WebSocket' in window) {
+			if('WebSocket' in window && websocketAttempts < 3) {
 				$scope.conn = websocketConnection(config);
 			} else {
+				config.scheme = serverInfo.scheme;
 				$scope.conn = httpConnection(config);
 			}
 		},
@@ -103,23 +106,28 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 				switch (message.Type.toLowerCase()) {
 					case "register":
   						$scope.newAccountMessage = message.Data;
+  						$scope.$apply();
    						return;
    					case "login":
 	   					$scope.loginMessage = message.Data;
+	   					$scope.$apply();
    						return;
    					default:
 		   				that.addMessage(message.Data);
+		   				$scope.$apply();
 	   					return;
    				}   				
 			}
 			switch (message.Type.toLowerCase()) {
 				case "login":
 					update();
+					websocketAttempts = 0;
 					$scope.loggedState = LOGGED;
 					messageGetter = $interval(update, 1000);
    					return;
    				case "register":
    					$scope.newAccountMessage = message.Data;
+   					$scope.$apply();
    					return;
 				case "friendlist":
 					if(!arrayEqualFunc($scope.friendlist, message.Data, function(element, index){

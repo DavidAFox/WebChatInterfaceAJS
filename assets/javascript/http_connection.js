@@ -47,6 +47,13 @@ factory('httpConnection', ['$http', '$interval', function($http, $interval) {
 				if(typeof config.resetLogin === 'function') {
 					config.resetLogin();
 				}
+				var message = {};
+				message.Success = false;
+				message.Type = response.config.url.slice(config.scheme.length+config.server.length);
+				if(message.Type === 'login' || message.Type === 'register') {
+					message.Data = "Error connecting to server."
+					config.onmessage(message);
+				}
 			}
 		};
 		getMessages = function() {
@@ -101,7 +108,8 @@ factory('websocketConnection', ['$timeout', function($timeout){
 				console.log("onmessage not function");
 			}
 		};
-		websocket.onerror = function() {
+		websocket.onerror = function(err) {
+			console.log(err)
 			config.resetLogin();
 			websocket.close();
 			logged = false;
