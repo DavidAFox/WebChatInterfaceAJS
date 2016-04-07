@@ -1,4 +1,5 @@
-var app = angular.module('chatInterface', ['connectionModule', 'userNames', 'luegg.directives']);
+(function(){
+var app = angular.module('chatInterface', ['connectionModule', 'userNames', 'luegg.directives', 'icons', 'messageParse']);
 app.value('serverInfo', {scheme: 'http://', address: 'localhost:8080/'});//change these to the location of the server
 app.directive('chatMessage', function(){
 	return {
@@ -20,7 +21,7 @@ app.directive('chatMessage', function(){
 							'{{message.Text}}</br>' +
 						'</div>' +
 						'<div data-ng-switch-when="Send">' +
-							'{{message.TimeString}} [<user user-name="{{message.Sender}}">{{message.Sender}}</user>]: {{message.Text}}' +
+							'{{message.TimeString}} [<user user-name="{{message.Sender}}">{{message.Sender}}</user>]: <message-text text="message.Text"></message-text>' +
 						'</div>' +
 						'<div data-ng-switch-default>' +
 							'{{message}}' +
@@ -39,7 +40,7 @@ app.directive('friendlist', function(){
 });
 app.directive('wholist', function() {
 	return  {
-		template: 	'<div data-ng-repeat="person in wholist.Clients track by $index">' +
+		template: 	'<div data-ng-repeat="person in wholist.Clients" track by $index>' +
 						'<user user-name="{{person}}"></user>' +
 					'</div>',
 		restrict: 'E' 
@@ -69,12 +70,13 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 	$scope.wholist = {Room: "", Clients: []};
 	$scope.friendlist = []
 	$scope.send = function(str) {
+		var array;
 		if (str.slice(0,1) === '/') {
 			str = str.slice(1)
+			array = str.split(" ");
 		} else {
-			str = 'send ' + str
+			array = ['send', str];
 		}
-		var array = str.split(" ");
 		$scope.conn.send({Command: array[0],Args: array.slice(1)});
 		$scope.input = ""
 	};
@@ -88,6 +90,11 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 		resetLogin: function() {
 			$scope.loggedState = LOGIN;
 			$interval.cancel(messageGetter);
+			if('WebSocket' in window) {
+				$scope.conn = websocketConnection(config);
+			} else {
+				$scope.conn = httpConnection(config);
+			}
 		},
 		scheme: serverInfo.scheme,
 		server: serverInfo.address,
@@ -164,7 +171,23 @@ app.controller('MainController', ['$scope','$interval', 'serverInfo', 'httpConne
 		$scope.messages.push(message);
 	};
 	this.updateMessages = function(messages) {
-		messages.forEach(this.addMessage);
+		//messages.forEach(this.addMessage);
+		var that = this;
+		var toLocaleTimeStringSupportsLocales = function() {
+ 			try {
+    			new Date().toLocaleTimeString('i');
+  			} catch (e) {
+    			return e.name === 'RangeError';
+  			}
+  			return false;
+		}
+		messages.forEach(function(message){
+			if(typeof message.Time !== 'undefined' && toLocaleTimeStringSupportsLocales()) {
+				var date = new Date(message.Time);
+				message.TimeString = date.toLocaleTimeString();
+			}
+			that.addMessage(message);
+		})
 	};
 	var update = function() {
 		$scope.conn.send({Command: 'friendlist', Args: []});
@@ -215,3 +238,4 @@ app.directive('chatInterface', function() {
 		restrict: 'E'
 	}
 })
+})();
