@@ -70,7 +70,7 @@ describe("Main App", function(){
 			it('should create a send command', function() {
 				spyOn(fake, 'send');
 				$scope.send('hey Bob');
-				expect(fake.send).toHaveBeenCalledWith({Command: 'send', Args: ['hey', 'Bob']})
+				expect(fake.send).toHaveBeenCalledWith({Command: 'send', Args: ['hey Bob']})
 			});
 		});
 	});
@@ -85,7 +85,7 @@ describe("Main App", function(){
 			$rootScope.message = {Type: 'Send', TimeString: 'Now', Sender: 'Bob', Text: 'hi'};
 			var element = $compile("<chat-message></chat-message>")($rootScope);
 			$rootScope.$digest();
-			expect(element.html()).toMatch(/Now \[.*Bob.*\]: hi/)
+			expect(element.html()).toMatch(/Now \[.*Bob.*\]:.*hi/)
 		});
 		it('replaces the message with the right format for Server message', function() {
 			$rootScope.message = {Type: 'Server', Text: 'The Server says hi'};
